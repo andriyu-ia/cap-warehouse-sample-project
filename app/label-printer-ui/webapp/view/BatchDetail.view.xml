@@ -1,0 +1,56 @@
+<mvc:View
+    controllerName="sample.print.label.controller.BatchDetail"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:f="sap.f"
+    displayBlock="true">
+    <f:DynamicPage id="batchDetailPage" toggleHeaderOnTitleClick="false">
+        <f:title>
+            <f:DynamicPageTitle>
+                <f:heading>
+                    <Title text="{= 'Batch Detail - ' + (${/selectedBatch/batchNo} || '-') }" level="H2" />
+                </f:heading>
+                <f:snappedContent>
+                    <HBox renderType="Bare" alignItems="Center">
+                        <ObjectStatus
+                            text="{/connectionState}"
+                            state="{path:'/connectionState', formatter: '.formatConnectionState'}" />
+                        <Text text=" | {/printerName}" class="sapUiTinyMarginBegin" />
+                    </HBox>
+                </f:snappedContent>
+                <f:actions>
+                    <Button icon="sap-icon://nav-back" text="Back" type="Transparent" press=".onNavBack" />
+                    <Button icon="sap-icon://connected" text="Connect Printer" type="Transparent" press=".onConnectPrinter" />
+                    <Button icon="sap-icon://document-text" text="Preview CPCL" type="Transparent" press=".onGoPreview" />
+                </f:actions>
+            </f:DynamicPageTitle>
+        </f:title>
+        <f:content>
+            <VBox class="sapUiContentPadding" width="100%">
+                <Panel headerText="Material Information" backgroundDesign="Transparent">
+                    <content>
+                        <VBox class="sapUiSmallMarginBegin sapUiSmallMarginBottom sapUiSmallMarginTop">
+                            <Text text="{= 'Material Code: ' + (${/selectedBatch/materialCode} || '-') }" />
+                            <Text text="{= 'Description: ' + (${/selectedBatch/materialDesc} || '-') }" class="sapUiTinyMarginTop" />
+                            <Text text="{= 'Batch: ' + (${/selectedBatch/batchNo} || '-') }" class="sapUiTinyMarginTop" />
+                            <ObjectStatus
+                                class="sapUiTinyMarginTop"
+                                text="{= 'Opname Type: ' + (${/selectedBatch/opnameType} || '-') }"
+                                state="{path:'/selectedBatch/opnameType', formatter: '.formatOpnameTypeState'}" />
+                        </VBox>
+                    </content>
+                </Panel>
+
+                <Panel headerText="Warehouse Information" class="sapUiSmallMarginTop" backgroundDesign="Transparent">
+                    <content>
+                        <VBox class="sapUiSmallMarginBegin sapUiSmallMarginBottom sapUiSmallMarginTop">
+                            <Text text="{= 'Plant: ' + (${/selectedBatch/plant} || '-') }" />
+                            <Text text="{= 'Storage Location: ' + (${/selectedBatch/storageLoc} || '-') }" class="sapUiTinyMarginTop" />
+                            <ObjectNumber class="sapUiTinyMarginTop" number="{/selectedBatch/qty}" unit="{/selectedBatch/uom}" />
+                        </VBox>
+                    </content>
+                </Panel>
+            </VBox>
+        </f:content>
+    </f:DynamicPage>
+</mvc:View>

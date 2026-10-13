@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sample Print Label</title>
+    <script src="util/qrcode.min.js"></script>
+    <script
+      id="sap-ui-bootstrap"
+      src="https://sdk.openui5.org/1.96.0/resources/sap-ui-core.js"
+      data-sap-ui-theme="sap_horizon"
+      data-sap-ui-compatVersion="edge"
+      data-sap-ui-async="true"
+      data-sap-ui-resourceroots='{"sample.print.label":"./"}'
+      data-sap-ui-oninit="module:sap/ui/core/ComponentSupport"
+      data-sap-ui-xx-waitForTheme="true"
+    ></script>
+  </head>
+  <body class="sapUiBody">
+    <div
+      data-sap-ui-component
+      data-name="sample.print.label"
+      data-id="container"
+      data-settings='{"id":"container"}'
+    ></div>
+    <div id="fallback-root" style="display:none;padding:1rem;font-family:Arial,sans-serif;">
+      <h2>Warehouse Label Print (Fallback Mode)</h2>
+      <p>UI5 runtime did not load. Running fallback screen so you can still test CPCL output.</p>
+      <label for="fallback-batch">Batch:</label>
+      <select id="fallback-batch"></select>
+      <button id="fallback-print" type="button">Generate CPCL</button>
+      <pre id="fallback-output" style="margin-top:1rem;background:#f5f5f5;padding:0.75rem;white-space:pre-wrap;"></pre>
+    </div>
+    <script>
+      var fallbackBatches = [
+        {
+          ID: "11111111-1111-1111-1111-111111111111",
+          materialCode: "FG-1001",
+          materialDesc: "Finished Goods - Red Widget",
+          batchNo: "BT-001",
+          plant: "1000",
+          storageLoc: "0101",
+          qty: 240,
+          uom: "EA",
+          opnameType: "CYCLE"
+        },
+        {
+          ID: "22222222-2222-2222-2222-222222222222",
+          materialCode: "FG-1002",
+          materialDesc: "Finished Goods - Blue Widget",
+          batchNo: "BT-002",
+          plant: "1000",
+          storageLoc: "0102",
+          qty: 180,
+          uom: "EA",
+          opnameType: "CYCLE"
+        }
+      ];
+
+      function buildFallbackCpcl(batch) {
+        var qrPayload = JSON.stringify({
+          materialCode: batch.materialCode,
+          materialDesc: batch.materialDesc,
+          batchNo: batch.batchNo,
+          plant: batch.plant,
+          storageLoc: batch.storageLoc,
+          qty: batch.qty,
+          uom: batch.uom,
+          opnameType: batch.opnameType
+        });
+        return [
+          "! 0 200 200 180 1",
+          "TEXT 4 0 30 30 " + (batch.materialDesc || batch.materialCode || "Unknown"),
+          "TEXT 2 0 30 110 " + batch.materialCode,
+          "TEXT 2 0 30 150 " + batch.batchNo,
+          "B QR 30 180 M 2 U 5",
+          qrPayload,
+          "ENDQR",
+          "TEXT 2 0 30 260 " + batch.plant + " / " + batch.storageLoc,
+          "TEXT 2 0 30 300 " + batch.qty + " " + batch.uom,
+          "PRINT",
+          ""
+        ].join("\r\n");
+      }
+
+      function showFallback() {
+        var fallbackRoot = document.getElementById("fallback-root");
+        var select = document.getElementById("fallback-batch");
+        var output = document.getElementById("fallback-output");
+        var button = document.getElementById("fallback-print");
+        if (!fallbackRoot || !select || !output || !button) {
+          return;
+        }
+
+        fallbackBatches.forEach(function (batch, index) {
+          var option = document.createElement("option");
+          option.value = String(index);
+          option.textContent = batch.materialCode + " - " + batch.batchNo;
+          select.appendChild(option);
+        });
+
+        button.addEventListener("click", function () {
+          var idx = Number(select.value || "0");
+          var cpcl = buildFallbackCpcl(fallbackBatches[idx]);
+          output.textContent = cpcl;
+        });
+
+        output.textContent = "Select a batch and click Generate CPCL.";
+        fallbackRoot.style.display = "block";
+      }
+
+      window.setTimeout(function () {
+        if (!window.sap || !window.sap.ui) {
+          showFallback();
+        }
+      }, 4000);
+    </script>
+  </body>
+</html>

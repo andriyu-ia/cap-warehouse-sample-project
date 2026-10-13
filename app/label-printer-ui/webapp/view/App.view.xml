@@ -1,0 +1,37 @@
+<mvc:View
+    controllerName="sample.print.label.controller.App"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:f="sap.f"
+    displayBlock="true">
+    <VBox fitContainer="true" width="100%">
+        <f:ShellBar
+            id="shellBar"
+            title="{/shell/appTitle}"
+            secondTitle="{/shell/appSubtitle}"
+            showProductSwitcher="true"
+            showCopilot="false"
+            showMenuButton="false"
+            homeIcon=""
+            productSwitcherPressed=".onOpenSettingsPress" />
+        <OverflowToolbar class="sapUiTinyMarginBegin sapUiTinyMarginEnd">
+            <ToolbarSpacer />
+            <Button
+                icon="sap-icon://bell"
+                type="Transparent"
+                text="{= 'Notifications (' + ${/shell/notifications} + ')' }"
+                press=".onNotificationsPress" />
+            <Button
+                icon="sap-icon://settings"
+                type="Transparent"
+                text="Settings"
+                press=".onOpenSettingsPress" />
+            <Button
+                icon="sap-icon://person-placeholder"
+                type="Transparent"
+                text="{/shell/userName}"
+                press=".onUserMenuPress" />
+        </OverflowToolbar>
+        <App id="app" />
+    </VBox>
+</mvc:View>

@@ -1,0 +1,40 @@
+_schema-version: '3.1'
+ID: sample-print-label
+version: 1.0.0
+
+parameters:
+  enable-parallel-deployments: true
+
+modules:
+  - name: sample-print-label-db
+    type: hdb
+    path: db
+    requires:
+      - name: sample-print-label-hdi
+
+  - name: sample-print-label-srv
+    type: nodejs
+    path: srv
+    provides:
+      - name: sample-print-label-srv_api
+        properties:
+          url: ${default-url}
+    requires:
+      - name: sample-print-label-hdi
+
+  - name: sample-print-label-ui
+    type: html5
+    path: app/label-printer-ui
+    requires:
+      - name: sample-print-label-srv_api
+        group: destinations
+        properties:
+          name: sample-print-label-srv
+          url: ~{url}
+          forwardAuthToken: true
+
+resources:
+  - name: sample-print-label-hdi
+    type: com.sap.xs.hdi-container
+    parameters:
+      service-plan: hdi-shared

@@ -1,0 +1,168 @@
+<mvc:View
+    controllerName="sample.print.label.controller.PrintPreview"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:f="sap.f"
+    xmlns:core="sap.ui.core"
+    displayBlock="true">
+    <f:DynamicPage id="printPreviewPage" toggleHeaderOnTitleClick="false">
+        <f:title>
+            <f:DynamicPageTitle>
+                <f:heading>
+                    <Title text="Print Preview" level="H2" />
+                </f:heading>
+                <f:snappedContent>
+                    <HBox renderType="Bare" alignItems="Center">
+                        <ObjectStatus
+                            text="{/connectionState}"
+                            state="{path:'/connectionState', formatter: '.formatConnectionState'}" />
+                        <Text text=" | {/printerName}" class="sapUiTinyMarginBegin" />
+                    </HBox>
+                </f:snappedContent>
+                <f:expandedContent>
+                    <VBox renderType="Bare">
+                        <Text text="{= 'Material: ' + (${/selectedBatch/materialCode} || '-') + ' / Batch: ' + (${/selectedBatch/batchNo} || '-') }" />
+                        <HBox renderType="Bare" alignItems="Center" class="sapUiTinyMarginTop">
+                            <ObjectStatus
+                                text="{/connectionState}"
+                                state="{path:'/connectionState', formatter: '.formatConnectionState'}" />
+                            <Text text=" | {/printerName}" class="sapUiTinyMarginBegin" />
+                        </HBox>
+                    </VBox>
+                </f:expandedContent>
+                <f:actions>
+                    <Button icon="sap-icon://nav-back" text="Back" type="Transparent" press=".onNavBack" />
+                    <Button icon="sap-icon://connected" text="Connect Printer" type="Transparent" press=".onConnectPrinter" />
+                    <Button icon="sap-icon://print" text="Cetak Kabel / Browser" type="Default" press=".onBrowserPrint" tooltip="Cetak ke printer biasa / kabel via dialog print sistem" />
+                    <Button icon="sap-icon://paper-plane" text="Print Bluetooth (CPCL)" type="Emphasized" press=".onPrint" tooltip="Kirim perintah CPCL via Bluetooth ke HPRT HM-A300E" />
+                </f:actions>
+            </f:DynamicPageTitle>
+        </f:title>
+        <f:content>
+            <VBox class="sapUiContentPadding" width="100%">
+
+                <!-- Section 1: Simulated Physical Printed Label -->
+                <Panel
+                    expandable="false"
+                    expanded="true"
+                    width="100%">
+                    <headerToolbar>
+                        <OverflowToolbar>
+                            <core:Icon src="sap-icon://tag" class="sapUiTinyMarginEnd" />
+                            <Title text="Simulasi Hasil Cetak Label Fisik" level="H3" />
+                            <ToolbarSpacer />
+                            <Button icon="sap-icon://print" text="Cetak Label (Kabel / PDF)" type="Emphasized" press=".onBrowserPrint" />
+                            <ObjectStatus text="HPRT HM-A300E (203 DPI)" state="Information" class="sapUiTinyMarginBegin" />
+                        </OverflowToolbar>
+                    </headerToolbar>
+                    <content>
+                        <VBox class="labelPreviewBackdrop sapUiSmallMarginBottom">
+                            <!-- Physical Thermal Sticker Container with realistic physical ratio -->
+                            <VBox class="thermalLabelSticker">
+                                
+                                <!-- Header Strip -->
+                                <HBox justifyContent="SpaceBetween" alignItems="Center" class="labelHeaderStrip">
+                                    <Text text="STOCK OPNAME LABEL" class="labelMetaBold" />
+                                    <Text text="{/selectedBatch/opnameType}" class="labelMetaType" />
+                                </HBox>
+
+                                <!-- Divider -->
+                                <HBox class="labelDividerBold" />
+
+                                <!-- Material Description -->
+                                <VBox class="labelSection">
+                                    <Text text="MATERIAL DESCRIPTION:" class="labelSubCaption" />
+                                    <Text text="{= ${/selectedBatch/materialDesc} || 'No Description' }" class="labelMaterialTitle" wrapping="true" />
+                                </VBox>
+
+                                <!-- Divider -->
+                                <HBox class="labelDivider" />
+
+                                <!-- Material Code & Batch Number -->
+                                <HBox justifyContent="SpaceBetween" class="labelSection">
+                                    <VBox width="50%">
+                                        <Text text="MATERIAL CODE:" class="labelSubCaption" />
+                                        <Text text="{/selectedBatch/materialCode}" class="labelValueBold" />
+                                    </VBox>
+                                    <VBox width="50%">
+                                        <Text text="BATCH NO:" class="labelSubCaption" />
+                                        <Text text="{/selectedBatch/batchNo}" class="labelValueBold" />
+                                    </VBox>
+                                </HBox>
+
+                                <!-- Plant / SLoc & Quantity -->
+                                <HBox justifyContent="SpaceBetween" class="labelSection sapUiTinyMarginTop">
+                                    <VBox width="50%">
+                                        <Text text="PLANT / STORAGE LOC:" class="labelSubCaption" />
+                                        <Text text="{= ${/selectedBatch/plant} + ' / ' + ${/selectedBatch/storageLoc} }" class="labelValue" />
+                                    </VBox>
+                                    <VBox width="50%">
+                                        <Text text="QUANTITY:" class="labelSubCaption" />
+                                        <Text text="{= ${/selectedBatch/qty} + ' ' + ${/selectedBatch/uom} }" class="labelValueBold" />
+                                    </VBox>
+                                </HBox>
+
+                                <!-- Divider -->
+                                <HBox class="labelDivider" />
+
+                                <!-- QR Code & 2D Verification Block -->
+                                <HBox alignItems="Center" justifyContent="SpaceBetween" class="labelSection">
+                                    <VBox alignItems="Center" class="labelQrBox">
+                                        <Image
+                                            id="labelQrImage"
+                                            src="{/qrCodeDataUrl}"
+                                            width="110px"
+                                            height="110px"
+                                            decorative="true"
+                                            densityAware="false" />
+                                        <Text text="* SCAN QR *" class="labelMicroText sapUiTinyMarginTop" />
+                                    </VBox>
+                                    <VBox class="sapUiSmallMarginBegin" width="100%">
+                                        <Text text="2D CPCL MATRIX" class="labelMetaBold" />
+                                        <Text text="JSON Encoded Batch Verification" class="labelMicroText" wrapping="true" />
+                                        <Text text="{= 'Mat: ' + ${/selectedBatch/materialCode} }" class="labelMicroText" />
+                                        <Text text="{= 'Batch: ' + ${/selectedBatch/batchNo} }" class="labelMicroText" />
+                                        <Text text="{= 'Qty: ' + ${/selectedBatch/qty} + ' ' + ${/selectedBatch/uom} }" class="labelMicroText" />
+                                        <Text text="{= 'Loc: ' + ${/selectedBatch/plant} + '-' + ${/selectedBatch/storageLoc} }" class="labelMicroText" />
+                                    </VBox>
+                                </HBox>
+
+                                <!-- Tear Line Simulated -->
+                                <HBox class="labelTearLine" justifyContent="Center">
+                                    <Text text="- - - - - - - - - - - TEAR LINE - - - - - - - - - - -" class="labelTearText" />
+                                </HBox>
+                            </VBox>
+                            <Text text="* Representasi visual stiker thermal ukuran ~75mm x 50mm pada printer HPRT HM-A300E." class="sapUiTinyMarginTop sapUiLabel" />
+                        </VBox>
+                    </content>
+                </Panel>
+
+                <!-- Section 2: Raw CPCL Machine Commands (Expandable) -->
+                <Panel
+                    expandable="true"
+                    expanded="false"
+                    class="sapUiSmallMarginTop"
+                    width="100%">
+                    <headerToolbar>
+                        <OverflowToolbar>
+                            <core:Icon src="sap-icon://source-code" class="sapUiTinyMarginEnd" />
+                            <Title text="Kode Perintah CPCL (Raw Machine Payload)" level="H3" />
+                            <ToolbarSpacer />
+                            <Button icon="sap-icon://copy" text="Salin CPCL" type="Transparent" press=".onCopyCpcl" />
+                        </OverflowToolbar>
+                    </headerToolbar>
+                    <content>
+                        <TextArea
+                            value="{/cpclLog}"
+                            editable="false"
+                            growing="true"
+                            growingMaxLines="20"
+                            rows="10"
+                            width="100%" />
+                    </content>
+                </Panel>
+
+            </VBox>
+        </f:content>
+    </f:DynamicPage>
+</mvc:View>

@@ -1,0 +1,84 @@
+{
+  "_version": "1.96.0",
+  "sap.app": {
+    "id": "sample.print.label",
+    "type": "application",
+    "title": "Sample Print Label",
+    "description": "Warehouse label printing app for Datalogic handheld devices",
+    "applicationVersion": {
+      "version": "1.0.0"
+    }
+  },
+  "sap.ui": {
+    "technology": "UI5",
+    "deviceTypes": {
+      "desktop": true,
+      "tablet": true,
+      "phone": true
+    }
+  },
+  "sap.ui5": {
+    "rootView": {
+      "viewName": "sample.print.label.view.App",
+      "type": "XML",
+      "id": "app"
+    },
+    "dependencies": {
+      "minUI5Version": "1.96.0",
+      "libs": {
+        "sap.ui.core": {},
+        "sap.m": {},
+        "sap.f": {}
+      }
+    },
+    "routing": {
+      "config": {
+        "routerClass": "sap.m.routing.Router",
+        "viewType": "XML",
+        "viewPath": "sample.print.label.view",
+        "controlId": "app",
+        "controlAggregation": "pages",
+        "async": true,
+        "transition": "slide"
+      },
+      "routes": [
+        {
+          "pattern": "",
+          "name": "batchList",
+          "target": "batchList"
+        },
+        {
+          "pattern": "detail/{batchId}",
+          "name": "batchDetail",
+          "target": "batchDetail"
+        },
+        {
+          "pattern": "preview",
+          "name": "printPreview",
+          "target": "printPreview"
+        }
+      ],
+      "targets": {
+        "batchList": {
+          "viewName": "BatchList",
+          "viewId": "batchList"
+        },
+        "batchDetail": {
+          "viewName": "BatchDetail",
+          "viewId": "batchDetail"
+        },
+        "printPreview": {
+          "viewName": "PrintPreview",
+          "viewId": "printPreview"
+        }
+      }
+    },
+    "resources": {
+      "css": [
+        {
+          "uri": "css/style.css"
+        }
+      ]
+    }
+  }
+}

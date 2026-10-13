@@ -1,0 +1,21 @@
+{
+  "name": "sample-print-label",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Minimal MTA project for mobile warehouse label printing with CAP and SAPUI5",
+  "scripts": {
+    "start": "cds run",
+    "watch": "cds watch",
+    "build": "cds build --production",
+    "ui:serve": "npx serve app/label-printer-ui/webapp"
+  },
+  "dependencies": {
+    "@sap/cds": "^8.0.0",
+    "@cap-js/sqlite": "^1.0.0"
+  },
+  "devDependencies": {
+    "@sap/cds-dk": "^8.0.0",
+    "@ui5/cli": "^3.0.0",
+    "ui5-tooling": "^3.0.0"
+  }
+}

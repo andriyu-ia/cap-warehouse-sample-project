@@ -1,0 +1,89 @@
+<mvc:View
+    controllerName="sample.print.label.controller.BatchList"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:f="sap.f"
+    displayBlock="true">
+    <f:DynamicPage id="batchListPage" toggleHeaderOnTitleClick="false">
+        <f:title>
+            <f:DynamicPageTitle>
+                <f:heading>
+                    <Title text="Warehouse Label Printing" level="H2" />
+                </f:heading>
+                <f:snappedContent>
+                    <HBox renderType="Bare" alignItems="Center">
+                        <ObjectStatus
+                            text="{/connectionState}"
+                            state="{path:'/connectionState', formatter: '.formatConnectionState'}" />
+                        <Text text=" | {/printerName}" class="sapUiTinyMarginBegin" />
+                    </HBox>
+                </f:snappedContent>
+                <f:expandedContent>
+                    <VBox renderType="Bare">
+                        <Text text="Batch List (S/4HANA-style Fiori flow)" />
+                        <Text text="{= 'Last print: ' + ${/lastPrintAt} }" class="sapUiTinyMarginTop" />
+                    </VBox>
+                </f:expandedContent>
+                <f:actions>
+                    <Button icon="sap-icon://connected" text="Connect Printer" type="Transparent" press=".onConnectPrinter" />
+                    <Button icon="sap-icon://document-text" text="Preview CPCL" type="Transparent" press=".onPrintPreview" />
+                </f:actions>
+            </f:DynamicPageTitle>
+        </f:title>
+        <f:content>
+            <VBox class="sapUiContentPadding" width="100%">
+                <Table
+                    id="batchTable"
+                    inset="false"
+                    items="{/batches}"
+                    width="100%">
+                    <columns>
+                        <Column width="10rem">
+                            <Text text="Material" />
+                        </Column>
+                        <Column minScreenWidth="Tablet" demandPopin="true" width="14rem">
+                            <Text text="Description" />
+                        </Column>
+                        <Column width="8rem">
+                            <Text text="Batch" />
+                        </Column>
+                        <Column minScreenWidth="Tablet" demandPopin="true" width="8rem">
+                            <Text text="Plant" />
+                        </Column>
+                        <Column minScreenWidth="Tablet" demandPopin="true" width="8rem">
+                            <Text text="Storage" />
+                        </Column>
+                        <Column hAlign="End" width="8rem">
+                            <Text text="Qty" />
+                        </Column>
+                        <Column minScreenWidth="Tablet" demandPopin="true" width="8rem">
+                            <Text text="Type" />
+                        </Column>
+                        <Column width="11rem" hAlign="Center">
+                            <Text text="Action" />
+                        </Column>
+                    </columns>
+                    <items>
+                        <ColumnListItem>
+                            <cells>
+                                <ObjectIdentifier title="{materialCode}" text="{materialDesc}" />
+                                <Text text="{materialDesc}" />
+                                <ObjectIdentifier title="{batchNo}" />
+                                <Text text="{plant}" />
+                                <Text text="{storageLoc}" />
+                                <ObjectNumber number="{qty}" unit="{uom}" />
+                                <ObjectStatus
+                                    text="{opnameType}"
+                                    state="{path:'opnameType', formatter: '.formatOpnameTypeState'}" />
+                                <HBox justifyContent="Center" alignItems="Center">
+                                    <Button text="Open" type="Transparent" press=".onOpenBatch" />
+                                    <Button icon="sap-icon://print" text="Print" type="Emphasized" press=".onRowPrint" class="sapUiTinyMarginBegin" tooltip="Cetak label untuk batch ini" />
+                                </HBox>
+                            </cells>
+                        </ColumnListItem>
+                    </items>
+                </Table>
+            </VBox>
+        </f:content>
+    </f:DynamicPage>
+</mvc:View>
